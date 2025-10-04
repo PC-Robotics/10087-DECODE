@@ -78,16 +78,14 @@ public class DriveBase extends OpMode {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    final double LAUNCHER_TARGET_VELOCITY = 1125;
-    final double LAUNCHER_MIN_VELOCITY = 1075;
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
     private DcMotor rightFrontDrive = null;
     private DcMotor leftBackDrive = null;
     private DcMotor rightBackDrive = null;
-    private DcMotorEx leftLauncher = null;
-    private DcMotorEx rightLauncher = null;
+    private DcMotor leftLauncher = null;
+    private DcMotor rightLauncher = null;
     private Servo elevator = null;
     private Servo claw = null;
 
@@ -140,8 +138,8 @@ public class DriveBase extends OpMode {
         rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
         leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
         rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        leftLauncher = hardwareMap.get(DcMotorEx.class, "left_launcher");
-        rightLauncher = hardwareMap.get(DcMotorEx.class, "right_launcher");
+        leftLauncher = hardwareMap.get(DcMotor.class, "left_launcher");
+        rightLauncher = hardwareMap.get(DcMotor.class, "right_launcher");
         elevator = hardwareMap.get(Servo.class, "elevator");
         claw = hardwareMap.get(Servo.class, "claw");
 
@@ -179,8 +177,8 @@ public class DriveBase extends OpMode {
         leftLauncher.setZeroPowerBehavior(BRAKE);
         rightLauncher.setZeroPowerBehavior(BRAKE);
 
-        leftLauncher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
-        rightLauncher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
+        leftLauncher.setZeroPowerBehavior(BRAKE);
+        rightLauncher.setZeroPowerBehavior(BRAKE);
 
         /*
          * Inverting the direction of the elevator servo to account for the rack and pinion.
@@ -228,11 +226,11 @@ public class DriveBase extends OpMode {
          * queuing a shot.
          */
         if (gamepad1.triangle) {
-            leftLauncher.setVelocity(LAUNCHER_TARGET_VELOCITY);
-            rightLauncher.setVelocity(LAUNCHER_TARGET_VELOCITY);
+            leftLauncher.setPower(FULL_SPEED);
+            rightLauncher.setPower(FULL_SPEED);
         } else if (gamepad1.square) { // stop flywheels
-            leftLauncher.setVelocity(STOP_SPEED);
-            rightLauncher.setVelocity(STOP_SPEED);
+            leftLauncher.setPower(STOP_SPEED);
+            rightLauncher.setPower(STOP_SPEED);
         }
 
         /*
@@ -251,8 +249,6 @@ public class DriveBase extends OpMode {
          * Show the state, motor powers, and servo positions.
          */
         telemetry.addData("State", launchState);
-        telemetry.addData("Left flywheel speed", leftLauncher.getVelocity());
-        telemetry.addData("Right flywheel speed", rightLauncher.getVelocity());
         telemetry.addData("Elevator position", elevator.getPosition());
         telemetry.addData("Claw position", claw.getPosition());
     }
@@ -289,13 +285,14 @@ public class DriveBase extends OpMode {
             case IDLE:
                 if (shotRequested) { // Setting the launch state to spin up when the shoot button is pressed
                     launchState = LaunchState.SPIN_UP;
+                    feederTimer.reset();
                 }
                 break;
             case SPIN_UP:
-                leftLauncher.setVelocity(LAUNCHER_TARGET_VELOCITY);
-                rightLauncher.setVelocity(LAUNCHER_TARGET_VELOCITY);
-                if (leftLauncher.getVelocity() > LAUNCHER_MIN_VELOCITY && rightLauncher.getVelocity() > LAUNCHER_MIN_VELOCITY) {
-                    launchState = LaunchState.LAUNCH; // Launching once the motor reaches the right speed
+                leftLauncher.setPower(FULL_SPEED);
+                rightLauncher.setPower(FULL_SPEED);
+                if (feederTimer.seconds()>1.0) { // Launching once the motor reaches the right speed
+                    launchState = LaunchState.LAUNCH;
                 }
                 break;
             case LAUNCH:
@@ -314,8 +311,8 @@ public class DriveBase extends OpMode {
                 if (feederTimer.seconds() > FEED_TIME_SECONDS) {
                     launchState = LaunchState.IDLE;
                     elevator.setPosition((ELEVATOR_DOWN));
-                    leftLauncher.setVelocity(STOP_SPEED);
-                    rightLauncher.setVelocity(STOP_SPEED);
+                    leftLauncher.setPower(STOP_SPEED);
+                    rightLauncher.setPower(STOP_SPEED);
                 }
                 break;
         }
