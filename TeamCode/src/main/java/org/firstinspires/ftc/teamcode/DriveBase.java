@@ -69,8 +69,8 @@ public class DriveBase extends OpMode {
     final double ELEVATOR_UP = 1.0; // Elevator position at maximum height
     final double ELEVATOR_DOWN = 0.5; // Elevator position at minimum height
 
-    final double CLAW_OPEN = 0.4; // Claw position closed
-    final double CLAW_CLOSE = 0.45; // Claw position open
+    final double CLAW_OPEN = 0.45; // Claw position closed
+    final double CLAW_CLOSE = 0.5; // Claw position open
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -164,6 +164,7 @@ public class DriveBase extends OpMode {
          */
         leftLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightLauncher.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        leftLauncher.setDirection(DcMotorSimple.Direction.REVERSE);
 
         /*
          * Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to
@@ -239,6 +240,9 @@ public class DriveBase extends OpMode {
          */
         if (gamepad1.circle) setClaw(true);// open claw
         else if (gamepad1.cross) setClaw(false); // close claw
+
+        if (gamepad1.dpad_up) raiseElevator(true);// raise elevator
+        else if (gamepad1.dpad_down) raiseElevator(false); // lower elevator
 
 
         /*
@@ -328,6 +332,14 @@ public class DriveBase extends OpMode {
             claw.setPosition(CLAW_OPEN);
         } else {
             claw.setPosition(CLAW_CLOSE);
+        }
+    }
+
+    void raiseElevator(boolean up){
+        if(up){
+            elevator.setPosition(ELEVATOR_UP);
+        } else {
+            elevator.setPosition(ELEVATOR_DOWN);
         }
     }
 }
