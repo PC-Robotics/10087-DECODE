@@ -65,7 +65,7 @@ public class DriveBase extends OpMode {
     final double STOP_SPEED = 0.0; // We send this power to the servos/motors when we want them to stop.
     final double FULL_SPEED = 1.0;
 
-    final double FEED_TIME_SECONDS = 5; // The amount of time we wait before lowering the elevator and stopping the flywheels.
+    final double FEED_TIME_SECONDS = 4; // The amount of time we wait before lowering the elevator and stopping the flywheels.
     final double ELEVATOR_UP = 1.0; // Elevator position at maximum height
     final double ELEVATOR_DOWN = 0.5; // Elevator position at minimum height
 
