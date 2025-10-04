@@ -69,8 +69,8 @@ public class DriveBase extends OpMode {
     final double ELEVATOR_UP = 1.0; // Elevator position at maximum height
     final double ELEVATOR_DOWN = 0.5; // Elevator position at minimum height
 
-    final double CLAW_OPEN = 0.4; // Claw position closed
-    final double CLAW_CLOSE = 0.45; // Claw position open
+    final double CLAW_OPEN = 0.45; // Claw position closed
+    final double CLAW_CLOSE = 0.5; // Claw position open
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -184,7 +184,7 @@ public class DriveBase extends OpMode {
          * Inverting the direction of the elevator servo to account for the rack and pinion.
          */
         elevator.setDirection(Servo.Direction.FORWARD);
-        claw.setDirection(Servo.Direction.FORWARD);
+        claw.setDirection(Servo.Direction.REVERSE);
 
         /*
          * Tell the driver that initialization is complete.
@@ -220,7 +220,7 @@ public class DriveBase extends OpMode {
          * both motors work to rotate the robot. Combinations of these inputs can be used to create
          * more complex maneuvers.
          */
-        mecanumDrive(gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        mecanumDrive(gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x);
 
         /*
          * Here we give the user control of the speed of the launcher motor without automatically
