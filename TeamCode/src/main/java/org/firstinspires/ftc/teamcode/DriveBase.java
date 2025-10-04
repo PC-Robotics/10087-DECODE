@@ -69,8 +69,8 @@ public class DriveBase extends OpMode {
     final double ELEVATOR_UP = 1.0; // Elevator position at maximum height
     final double ELEVATOR_DOWN = 0.55; // Elevator position at minimum height
 
-    final double CLAW_OPEN = 0.45; // Claw position closed
-    final double CLAW_CLOSE = 0.55; // Claw position open
+    final double CLAW_OPEN = 0.47; // Claw position closed
+    final double CLAW_CLOSE = 0.52; // Claw position open
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -221,7 +221,7 @@ public class DriveBase extends OpMode {
          * both motors work to rotate the robot. Combinations of these inputs can be used to create
          * more complex maneuvers.
          */
-        mecanumDrive(gamepad1.left_stick_y, -gamepad1.right_stick_x, gamepad1.left_stick_x);
+        mecanumDrive(gamepad1.left_stick_y, gamepad1.right_stick_x, gamepad1.left_stick_x);
 
         /*
          * Here we give the user control of the speed of the launcher motor without automatically
@@ -242,7 +242,8 @@ public class DriveBase extends OpMode {
         else if (gamepad1.cross) setClaw(false); // close claw
 
         if (gamepad1.dpad_up) raiseElevator(true);// raise elevator
-        else if (gamepad1.dpad_down) raiseElevator(false); // lower elevator
+        else if (gamepad1.dpad_down) raiseElevator(false);
+        else if (gamepad1.dpad_left) elevatorMiddlePos();// lower elevator
 
 
         /*
@@ -337,9 +338,13 @@ public class DriveBase extends OpMode {
 
     void raiseElevator(boolean up){
         if(up){
-            if(claw.getPosition()<0.5) elevator.setPosition(ELEVATOR_UP);
+            elevator.setPosition(ELEVATOR_UP);
         } else {
             elevator.setPosition(ELEVATOR_DOWN);
         }
+    }
+
+    void elevatorMiddlePos(){
+        elevator.setPosition(0.76);
     }
 }
