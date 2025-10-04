@@ -67,10 +67,10 @@ public class DriveBase extends OpMode {
 
     final double FEED_TIME_SECONDS = 5; // The amount of time we wait before lowering the elevator and stopping the flywheels.
     final double ELEVATOR_UP = 1.0; // Elevator position at maximum height
-    final double ELEVATOR_DOWN = 0.0; // Elevator position at minimum height
+    final double ELEVATOR_DOWN = 0.5; // Elevator position at minimum height
 
-    final double CLAW_OPEN = 0.0; // Claw position closed
-    final double CLAW_CLOSE = 0.5; // Claw position open
+    final double CLAW_OPEN = 0.4; // Claw position closed
+    final double CLAW_CLOSE = 0.45; // Claw position open
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
