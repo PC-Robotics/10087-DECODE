@@ -34,15 +34,19 @@ package org.firstinspires.ftc.teamcode;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
+import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 
 /*
  * This file includes a teleop (driver-controlled) file for the goBILDA® StarterBot for the
@@ -65,12 +69,13 @@ public class DriveBase extends OpMode {
     final double STOP_SPEED = 0.0; // We send this power to the servos/motors when we want them to stop.
     final double FULL_SPEED = 1.0;
 
-    final double FEED_TIME_SECONDS = 4; // The amount of time we wait before lowering the elevator and stopping the flywheels.
-    final double ELEVATOR_UP = 1.0; // Elevator position at maximum height
-    final double ELEVATOR_DOWN = 0.5; // Elevator position at minimum height
+    final double FEED_TIME_SECONDS = 1; // The amount of time we wait before lowering the elevator and stopping the flywheels.
+    final double ELEVATOR_UP = 0.7; // Elevator position at maximum height
+    final double ELEVATOR_MID = 0.5; // Elevator position at middle height
+    final double ELEVATOR_DOWN = 0.2; // Elevator position at minimum height
 
-    final double CLAW_OPEN = 0.4; // Claw position closed
-    final double CLAW_CLOSE = 0.45; // Claw position open
+    final double CLAW_OPEN = 0.20; // Claw position closed
+    final double CLAW_CLOSE = 0.3; // Claw position open
 
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -79,7 +84,7 @@ public class DriveBase extends OpMode {
      * at. The minimum velocity is a threshold for determining when to fire.
      */
     final double LAUNCHER_TARGET_VELOCITY = 1125;
-    final double LAUNCHER_MIN_VELOCITY = 1075;
+    final double LAUNCHER_MIN_VELOCITY = 2300;
 
     // Declare OpMode members.
     private DcMotor leftFrontDrive = null;
@@ -90,6 +95,13 @@ public class DriveBase extends OpMode {
     private DcMotorEx rightLauncher = null;
     private Servo elevator = null;
     private Servo claw = null;
+    private IMU imu = null;
+    private IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
+            RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
+            RevHubOrientationOnRobot.UsbFacingDirection.UP
+    ));
+
+    private double botHeading;
 
     ElapsedTime feederTimer = new ElapsedTime();
 
@@ -116,7 +128,20 @@ public class DriveBase extends OpMode {
         LAUNCHING,
     }
 
+    private enum ClawState {
+        CLOSE,
+        OPEN,
+    }
+
+    private enum ElevatorState {
+        DOWN,
+        MID,
+        UP,
+    }
+
     private LaunchState launchState;
+    private ClawState clawState;
+    private ElevatorState elevatorState;
 
     // Setup a variable for each drive wheel to save power level for telemetry
     double leftFrontPower;
@@ -144,6 +169,7 @@ public class DriveBase extends OpMode {
         rightLauncher = hardwareMap.get(DcMotorEx.class, "right_launcher");
         elevator = hardwareMap.get(Servo.class, "elevator");
         claw = hardwareMap.get(Servo.class, "claw");
+        imu = hardwareMap.get(IMU.class, "imu");
 
         /*
          * To drive forward, most robots need the motor on one side to be reversed,
@@ -182,10 +208,10 @@ public class DriveBase extends OpMode {
         leftLauncher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
         rightLauncher.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
 
-        /*
-         * Inverting the direction of the elevator servo to account for the rack and pinion.
-         */
-        elevator.setDirection(Servo.Direction.REVERSE);
+        leftLauncher.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightLauncher.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        imu.initialize(parameters);
 
         /*
          * Tell the driver that initialization is complete.
@@ -205,6 +231,9 @@ public class DriveBase extends OpMode {
      */
     @Override
     public void start() {
+        elevatorState = ElevatorState.DOWN;
+        setClaw(ClawState.CLOSE);
+        setElevator(ElevatorState.MID);
     }
 
     /*
@@ -212,6 +241,8 @@ public class DriveBase extends OpMode {
      */
     @Override
     public void loop() {
+        // Updating robot heading
+        botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
         /*
          * Here we call a function called arcadeDrive. The arcadeDrive function takes the input from
          * the joysticks, and applies power to the left and right drive motor to move the robot
@@ -221,7 +252,7 @@ public class DriveBase extends OpMode {
          * both motors work to rotate the robot. Combinations of these inputs can be used to create
          * more complex maneuvers.
          */
-        mecanumDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        mecanumDrive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x);
 
         /*
          * Here we give the user control of the speed of the launcher motor without automatically
@@ -238,14 +269,23 @@ public class DriveBase extends OpMode {
         /*
          * Opening and closing the claw.
          */
-        if (gamepad1.circle) setClaw(true);// open claw
-        else if (gamepad1.cross) setClaw(false); // close claw
+        if (gamepad1.circleWasPressed()) toggleClaw();
 
-
+        /*
+         * Setting elevator positions.
+         */
+        if (gamepad1.dpad_up) setElevator(ElevatorState.UP);
+        else if (gamepad1.dpad_left) setElevator(ElevatorState.MID);
+        else if (gamepad1.dpad_down) setElevator(ElevatorState.DOWN);
         /*
          * Now we call our "Launch" function.
          */
         launch(gamepad1.rightBumperWasPressed());
+
+        // resetting yaw when options is pressed
+        if (gamepad1.options) {
+            imu.resetYaw();
+        }
 
         /*
          * Show the state, motor powers, and servo positions.
@@ -253,8 +293,9 @@ public class DriveBase extends OpMode {
         telemetry.addData("State", launchState);
         telemetry.addData("Left flywheel speed", leftLauncher.getVelocity());
         telemetry.addData("Right flywheel speed", rightLauncher.getVelocity());
-        telemetry.addData("Elevator position", elevator.getPosition());
-        telemetry.addData("Claw position", claw.getPosition());
+        telemetry.addData("Elevator state", elevatorState);
+        telemetry.addData("Claw state", clawState);
+        telemetry.addData("Robot heading", (int) Math.toDegrees(botHeading));
     }
 
     /*
@@ -289,23 +330,20 @@ public class DriveBase extends OpMode {
             case IDLE:
                 if (shotRequested) { // Setting the launch state to spin up when the shoot button is pressed
                     launchState = LaunchState.SPIN_UP;
+                    setElevator(ElevatorState.MID);
                 }
                 break;
             case SPIN_UP:
                 leftLauncher.setVelocity(LAUNCHER_TARGET_VELOCITY);
                 rightLauncher.setVelocity(LAUNCHER_TARGET_VELOCITY);
-                if (leftLauncher.getVelocity() > LAUNCHER_MIN_VELOCITY && rightLauncher.getVelocity() > LAUNCHER_MIN_VELOCITY) {
+                if (-leftLauncher.getVelocity() > LAUNCHER_MIN_VELOCITY) {
                     launchState = LaunchState.LAUNCH; // Launching once the motor reaches the right speed
                 }
                 break;
             case LAUNCH:
-                if (claw.getPosition()>CLAW_CLOSE) { // launching if claw is closed
-                    elevator.setPosition((ELEVATOR_UP));
-                    feederTimer.reset(); // Starting timer for the elevator
-                    launchState = LaunchState.LAUNCHING;
-                } else {
-                    setClaw(false); // closing claw
-                }
+                elevator.setPosition((ELEVATOR_UP));
+                feederTimer.reset(); // Starting timer for the elevator
+                launchState = LaunchState.LAUNCHING;
                 break;
             case LAUNCHING:
                 /*
@@ -321,15 +359,52 @@ public class DriveBase extends OpMode {
         }
     }
 
+    void toggleClaw(){
+        switch (clawState) {
+            case OPEN:
+                setClaw(ClawState.CLOSE);
+                break;
+            case CLOSE:
+                setClaw(ClawState.OPEN);
+                break;
+        }
+    }
     /*
      * Open claw. Close claw.
      * If anyone says that I need to comment this function better, you should retake CSP.
      */
-    void setClaw(boolean open){
-        if(open){
-            claw.setPosition(CLAW_OPEN);
-        } else {
-            claw.setPosition(CLAW_CLOSE);
+    void setClaw(ClawState state){
+
+        switch (state) {
+            case OPEN:
+                if (elevatorState == ElevatorState.DOWN) {
+                    clawState = state;
+                    claw.setPosition(CLAW_OPEN);
+                }
+                break;
+            case CLOSE:
+                clawState = state;
+                claw.setPosition(CLAW_CLOSE);
+                break;
         }
+    }
+
+    void setElevator(ElevatorState state){
+        if (clawState == ClawState.CLOSE) {
+            elevatorState = state;
+            switch (state) {
+                case UP:
+                    elevator.setPosition(ELEVATOR_UP);
+                    setClaw(ClawState.CLOSE);
+                    break;
+                case MID:
+                    elevator.setPosition(ELEVATOR_MID);
+                    setClaw(ClawState.CLOSE);
+                    break;
+                case DOWN:
+                    elevator.setPosition(ELEVATOR_DOWN);
+                    break;
+            }
+        } else if (state != ElevatorState.DOWN) setClaw(ClawState.CLOSE);
     }
 }
