@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Claw;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 
+@TeleOp(name = "New Teleop", group = "Teleop")
 public class Teleop extends OpMode {
     private Robot robot;
 
@@ -53,9 +55,9 @@ public class Teleop extends OpMode {
         else if (gamepad1.dpad_left) robot.elevator.setElevator(Elevator.ElevatorState.MID);
         else if (gamepad1.dpad_down) robot.elevator.setElevator(Elevator.ElevatorState.DOWN);
 
-        if (gamepad1.options) robot.imu.resetYaw();
+        if (gamepad1.options) robot.drivetrain.resetYaw();
 
-        //launch(gamepad1.rightBumperWasPressed());
+        robot.launch(gamepad1.rightBumperWasPressed());
 
         /*
          * Show the state, motor powers, and servo positions.
@@ -65,6 +67,6 @@ public class Teleop extends OpMode {
         telemetry.addData("Right flywheel speed", robot.rightFlywheel.getVelocity());
         telemetry.addData("Elevator state", robot.elevator.state());
         telemetry.addData("Claw state", robot.claw.state());
-        telemetry.addData("Robot heading", (int) Math.toDegrees(robot.drivetrainFieldCentric.heading()));
+        telemetry.addData("Robot heading", (int) Math.toDegrees(robot.drivetrain.heading()));
     }
 }

@@ -48,7 +48,7 @@ public class Claw extends Subsystem {
     }
     /*
      * Method for setting the position of the claw servo. Will only open the claw if the elevator
-     * is set to ElevatorPosition.DOWN, but with present robot configuration, it can not actually
+     * is set to ElevatorState.DOWN, but with present robot configuration, it can not actually
      * determine the real location of the elevator, meaning that if the elevator is in the process
      * of lowering and setClaw(ClawState.OPEN) is called, the claw will open.
      *
@@ -83,5 +83,12 @@ public class Claw extends Subsystem {
                 setClaw(ClawState.OPEN);
                 break;
         }
+    }
+    /*
+     * Initializing the claw state to closed so that robot.elevator.setElevator can be called.
+     */
+    @Override
+    public void init(){
+        clawState = ClawState.CLOSE;
     }
 }

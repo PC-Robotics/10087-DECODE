@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.robot.subsystem;
 
-import org.firstinspires.ftc.teamcode.DriveBase;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.Subsystem;
 
+/*
+ * This class handles everything relating to the two 6000 rpm motors that spin the flywheels on the
+ * robot that launch the artifacts.
+ */
 public class Flywheels extends Subsystem {
     /*
      * When we control our launcher motor, we are using encoders. These allow the control system
@@ -14,11 +17,32 @@ public class Flywheels extends Subsystem {
     final double FLYWHEEL_TARGET_VELOCITY = 1125;
     final double FLYWHEEL_MIN_VELOCITY = 2300;
 
+    /*
+     * Boolean value to keep track of whether or not the flywheels are running.
+     */
     boolean flywheelsRunning;
+
+    /*
+     * Using the parent class, Subsystem, to construct Flywheels.
+     */
     public Flywheels(Robot robot) {
         super(robot);
     }
 
+    /*
+     * Returns true or false depending on whether the flywheels are running at sufficient speed to
+     * launch an artifact. Due to strange hardware issues where only the left flywheel was reading
+     * the correct velocity, we are only checking the left flywheel which has seemed good enough
+     * but should be fixed.
+     */
+    public boolean flywheelsReady(){
+        if (-robot.leftFlywheel.getVelocity() > FLYWHEEL_MIN_VELOCITY) {
+            return true;
+        } else return false;
+    }
+    /*
+     * Method for activating / deactivating the flywheels.
+     */
     public void setFlywheels(boolean on){
         flywheelsRunning = on;
         if (on){
@@ -29,16 +53,17 @@ public class Flywheels extends Subsystem {
             robot.rightFlywheel.setVelocity(0);
         }
     }
+    /*
+     * Method for toggling the flywheels to whatever they aren't currently set to. If this is being
+     * called from a teleop, use gamepad.buttonWasPressed() rather than gamepad.button, as one
+     * button press will last multiple frames and immediately toggle off the motors.
+     */
     public void toggleFlywheels(){
         setFlywheels(!flywheelsRunning);
     }
-
-    public boolean flywheelsReady(){
-        if (-robot.leftFlywheel.getVelocity() > FLYWHEEL_MIN_VELOCITY) {
-            return true;
-        } else return false;
-    }
-
+    /*
+     * Initializing the flywheels to off because it's not like they would ever start running anyways.
+     */
     @Override
     public void init(){
         flywheelsRunning = false;

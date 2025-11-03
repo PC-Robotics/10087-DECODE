@@ -1,17 +1,43 @@
 package org.firstinspires.ftc.teamcode.robot.subsystem;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.Subsystem;
 
+/*
+ * This class handles everything relating to the 4 motors that spin the mecanum wheels on the robot
+ * that are used to move the robot around.
+ */
 public class Drivetrain extends Subsystem {
+    /*
+     * Declaring a variable for each drive wheel to make it easier to manipulate and use.
+     */
     double leftFrontPower;
     double rightFrontPower;
     double leftBackPower;
     double rightBackPower;
+    /*
+     * Declaring a variable used to keep track of the rotation of the robot which is needed to use
+     * field centric controls.
+     */
+    double botHeading;
+
+    /*
+     * Using the parent class, Subsystem, to construct Drivetrain.
+     */
     public Drivetrain(Robot robot) {
         super(robot);
     }
-
+    /*
+     * Returns the heading of the robot in radians.
+     */
+    public double heading(){
+        return botHeading;
+    }
+    /*
+     * The drive function here uses the mecanum wheel magic that I don't really get the math behind
+     * to move around the robot and drive.
+     */
     public void drive(double forward, double strafe, double rotate){
 
         /* the denominator is the largest motor power (absolute value) or 1
@@ -30,5 +56,18 @@ public class Drivetrain extends Subsystem {
         robot.leftBackDrive.setPower(leftBackPower);
         robot.rightBackDrive.setPower(rightBackPower);
 
+    }
+    /*
+     * Method for resetting the yaw on a button press or something.
+     */
+    public void resetYaw(){
+        robot.imu.resetYaw();
+    }
+    /*
+     * Updating the heading of the robot every frame.
+     */
+    @Override
+    public void loop(){
+        botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
     }
 }
