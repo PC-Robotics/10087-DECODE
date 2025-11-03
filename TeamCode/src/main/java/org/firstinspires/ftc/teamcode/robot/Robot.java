@@ -1,19 +1,9 @@
 package org.firstinspires.ftc.teamcode.robot;
 
-import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
-
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.PIDFCoefficients;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Claw;
-import org.firstinspires.ftc.teamcode.robot.subsystem.DrivetrainFieldCentric;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Flywheels;
@@ -21,99 +11,49 @@ import org.firstinspires.ftc.teamcode.robot.subsystem.Flywheels;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Robot {
+/*
+ * This class handles the setup for all the different subsystems of the robot as well as providing
+ * a space for any extra methods, such as launch() to be.
+ */
+
+public class Robot extends RobotSetup {
+    /*
+     * Declaring all of the subsystems as well as the subsystem list.
+     */
     public Claw claw;
     public Elevator elevator;
     public Drivetrain drivetrain;
-    public DrivetrainFieldCentric drivetrainFieldCentric;
     public Flywheels flywheels;
     private final List<Subsystem> subsystems = new ArrayList<>();
 
-    final double FEED_TIME_SECONDS = 1; // The amount of time we wait before lowering the elevator and stopping the flywheels.
+    /*
+     * Declaring constants and enums to be used in robot methods.
+     */
+    private enum LaunchState {
+        IDLE,
+        SPIN_UP,
+        LAUNCH,
+        LAUNCHING,
+    }
+    final double FEED_TIME_SECONDS = 1; // Time we wait before lowering elevator after launching
+    private LaunchState launchState; // Enum to keep track of what stage of launching we are in
+    ElapsedTime feederTimer = new ElapsedTime(); // Timer to be used when launching artifacts
 
-    // Declare OpMode members.
-    public DcMotor leftFrontDrive = null;
-    public DcMotor rightFrontDrive = null;
-    public DcMotor leftBackDrive = null;
-    public DcMotor rightBackDrive = null;
-    public DcMotorEx leftFlywheel = null;
-    public DcMotorEx rightFlywheel = null;
-    public Servo elevatorServo = null;
-    public Servo clawServo = null;
-    public IMU imu = null;
-    private IMU.Parameters parameters = new IMU.Parameters(new RevHubOrientationOnRobot(
-            RevHubOrientationOnRobot.LogoFacingDirection.LEFT,
-            RevHubOrientationOnRobot.UsbFacingDirection.UP
-    ));
-
+    /*
+     * Intializing RobotSetup as well as assigning all of the the components, adding them to the
+     * subsystem list, and then initializing everything in the subsystem list.
+     */
+    @Override
     public void init(HardwareMap hardwareMap) {
-        /*
-         * Initialize the hardware variables. Note that the strings used here as parameters
-         * to 'get' must correspond to the names assigned during the robot configuration
-         * step.
-         */
-        leftFrontDrive = hardwareMap.get(DcMotor.class, "left_front_drive");
-        rightFrontDrive = hardwareMap.get(DcMotor.class, "right_front_drive");
-        leftBackDrive = hardwareMap.get(DcMotor.class, "left_back_drive");
-        rightBackDrive = hardwareMap.get(DcMotor.class, "right_back_drive");
-        leftFlywheel = hardwareMap.get(DcMotorEx.class, "left_launcher");
-        rightFlywheel = hardwareMap.get(DcMotorEx.class, "right_launcher");
-        elevatorServo = hardwareMap.get(Servo.class, "elevator");
-        clawServo = hardwareMap.get(Servo.class, "claw");
-        imu = hardwareMap.get(IMU.class, "imu");
-
-        /*
-         * To drive forward, most robots need the motor on one side to be reversed,
-         * because the axles point in opposite directions. Pushing the left stick forward
-         * MUST make robot go forward. So adjust these two lines based on your first test drive.
-         *
-         * Front wheels have been inverted to account for the 90 degree bends.
-         */
-        leftFrontDrive.setDirection(DcMotor.Direction.FORWARD);
-        rightFrontDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftBackDrive.setDirection(DcMotor.Direction.REVERSE);
-        rightBackDrive.setDirection(DcMotor.Direction.FORWARD);
-
-        /*
-         * Here we set our launcher to the RUN_USING_ENCODER runmode.
-         * If you notice that you have no control over the velocity of the motor, it just jumps
-         * right to a number much higher than your set point, make sure that your encoders are plugged
-         * into the port right beside the motor itself. And that the motors polarity is consistent
-         * through any wiring.
-         */
-        leftFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        rightFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        /*
-         * Setting zeroPowerBehavior to BRAKE enables a "brake mode". This causes the motor to
-         * slow down much faster when it is coasting. This creates a much more controllable
-         * drivetrain. As the robot stops much quicker.
-         */
-        leftFrontDrive.setZeroPowerBehavior(BRAKE);
-        rightFrontDrive.setZeroPowerBehavior(BRAKE);
-        leftBackDrive.setZeroPowerBehavior(BRAKE);
-        rightBackDrive.setZeroPowerBehavior(BRAKE);
-        leftFlywheel.setZeroPowerBehavior(BRAKE);
-        rightFlywheel.setZeroPowerBehavior(BRAKE);
-
-        leftFlywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
-        rightFlywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
-
-        leftFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        imu.initialize(parameters);
-
+        super.init(hardwareMap);
         claw = new Claw(this);
         elevator = new Elevator(this);
         drivetrain = new Drivetrain(this);
-        drivetrainFieldCentric = new DrivetrainFieldCentric(this);
         flywheels = new Flywheels(this);
 
         subsystems.add(claw);
         subsystems.add(elevator);
         subsystems.add(drivetrain);
-        subsystems.add(drivetrainFieldCentric);
         subsystems.add(flywheels);
 
         for (Subsystem s: subsystems){
@@ -121,21 +61,63 @@ public class Robot {
         }
     }
 
+    /*
+     * Code to be ran every frame after initialization but before start.
+     */
     public void init_loop(){
         for (Subsystem s: subsystems){
             s.init_loop();
         }
     }
 
+    /*
+     * Code to be ran once on start.
+     */
     public void start(){
         for (Subsystem s: subsystems){
             s.start();
         }
     }
 
+    /*
+     * Code to be ran every frame after start.
+     */
     public void loop(){
         for (Subsystem s: subsystems){
             s.loop();
+        }
+    }
+
+    public void launch(boolean shotRequested) {
+        switch (launchState) {
+            case IDLE:
+                if (shotRequested) { // Setting the launch state to spin up when the shoot button is pressed
+                    launchState = LaunchState.SPIN_UP;
+                    elevator.setElevator(Elevator.ElevatorState.MID);
+                }
+                break;
+            case SPIN_UP:
+                flywheels.setFlywheels(true);
+                if (flywheels.flywheelsReady()) {
+                    launchState = LaunchState.LAUNCH; // Launching once the motor reaches the right speed
+                }
+                break;
+            case LAUNCH:
+                elevator.setElevator(Elevator.ElevatorState.UP);
+                feederTimer.reset(); // Starting timer for the elevator
+                launchState = LaunchState.LAUNCHING;
+                break;
+
+            case LAUNCHING:
+                /*
+                 * Lowering elevator, stopping flywheels, and going back to idle once the timer elapses.
+                 */
+                if (feederTimer.seconds() > FEED_TIME_SECONDS) {
+                    launchState = LaunchState.IDLE;
+                    elevator.setElevator(Elevator.ElevatorState.DOWN);
+                    flywheels.setFlywheels(false);
+                }
+                break;
         }
     }
 }
