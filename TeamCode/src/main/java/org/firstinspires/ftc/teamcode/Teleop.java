@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 
 @TeleOp(name = "New Teleop", group = "Teleop")
 public class Teleop extends OpMode {
-    private Robot robot;
+    protected Robot robot;
 
     @Override
     /* Code to run ONCE when the driver hits INIT
