@@ -38,7 +38,29 @@ public class Drivetrain extends Subsystem {
      * The drive function here uses the mecanum wheel magic that I don't really get the math behind
      * to move around the robot and drive.
      */
-    public void drive(double forward, double strafe, double rotate){
+    public void drive(double y, double x, double rotate){
+        double strafe = x;
+        double forward = y;
+        /* the denominator is the largest motor power (absolute value) or 1
+         * This ensures all the powers maintain the same ratio,
+         * but only if at least one is out of the range [-1, 1]
+         */
+        double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate), 1);
+
+        leftFrontPower = (forward + strafe + rotate) / denominator;
+        leftBackPower = (forward - strafe + rotate) / denominator;
+        rightFrontPower = (forward - strafe - rotate) / denominator;
+        rightBackPower = (forward + strafe - rotate) / denominator;
+
+        robot.leftFrontDrive.setPower(leftFrontPower);
+        robot.rightFrontDrive.setPower(rightFrontPower);
+        robot.leftBackDrive.setPower(leftBackPower);
+        robot.rightBackDrive.setPower(rightBackPower);
+
+    }
+    public void fieldCentricDrive(double y, double x, double rotate){
+        double strafe = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double forward = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
         /* the denominator is the largest motor power (absolute value) or 1
          * This ensures all the powers maintain the same ratio,

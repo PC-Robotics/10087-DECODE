@@ -47,7 +47,7 @@ public class Flywheels extends Subsystem {
         flywheelsRunning = on;
         if (on){
             robot.leftFlywheel.setVelocity(FLYWHEEL_TARGET_VELOCITY);
-            robot.leftFlywheel.setVelocity(FLYWHEEL_TARGET_VELOCITY);
+            robot.rightFlywheel.setVelocity(FLYWHEEL_TARGET_VELOCITY);
         } else {
             robot.leftFlywheel.setVelocity(0);
             robot.rightFlywheel.setVelocity(0);
