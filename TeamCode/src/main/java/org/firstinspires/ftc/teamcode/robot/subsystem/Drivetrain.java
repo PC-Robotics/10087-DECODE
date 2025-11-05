@@ -20,7 +20,10 @@ public class Drivetrain extends Subsystem {
      * Declaring a variable used to keep track of the rotation of the robot which is needed to use
      * field centric controls.
      */
-    double botHeading;
+    double heading;
+
+    double strafe;
+    double forward;
 
     /*
      * Using the parent class, Subsystem, to construct Drivetrain.
@@ -31,16 +34,16 @@ public class Drivetrain extends Subsystem {
     /*
      * Returns the heading of the robot in radians.
      */
-    public double heading(){
-        return botHeading;
+    public double getHeading(){
+        return heading;
     }
     /*
      * The drive function here uses the mecanum wheel magic that I don't really get the math behind
      * to move around the robot and drive.
      */
     public void drive(double y, double x, double rotate){
-        double strafe = x;
-        double forward = y;
+        strafe = x;
+        forward = y;
         /* the denominator is the largest motor power (absolute value) or 1
          * This ensures all the powers maintain the same ratio,
          * but only if at least one is out of the range [-1, 1]
@@ -59,8 +62,8 @@ public class Drivetrain extends Subsystem {
 
     }
     public void fieldCentricDrive(double y, double x, double rotate){
-        double strafe = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double forward = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        strafe = x * Math.cos(-heading) - y * Math.sin(-heading);
+        forward = x * Math.sin(-heading) + y * Math.cos(-heading);
 
         /* the denominator is the largest motor power (absolute value) or 1
          * This ensures all the powers maintain the same ratio,
@@ -90,6 +93,9 @@ public class Drivetrain extends Subsystem {
      */
     @Override
     public void loop(){
-        botHeading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        heading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+        addToTelemetry("Robot heading (degrees)", (int)Math.toDegrees(heading));
+        addToTelemetry("Strafe power", strafe);
+        addToTelemetry("Forward power", forward);
     }
 }

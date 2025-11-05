@@ -3,14 +3,16 @@ package org.firstinspires.ftc.teamcode.robot;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Claw;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Flywheels;
 
 import java.util.ArrayList;
+//import java.util.LinkedHashMap;
 import java.util.List;
-
+import java.util.Map;
 /*
  * This class handles the setup for all the different subsystems of the robot as well as providing
  * a space for any extra methods, such as launch() to be.
@@ -88,6 +90,26 @@ public class Robot extends RobotSetup {
         for (Subsystem s: subsystems){
             s.loop();
         }
+    }
+
+    /*
+     * Iterating through the list of subsystems to get their telemetry maps and then iterating
+     * through each subsystems telemetry map, getting the captions and the values of their telemetry,
+     * and adding it to the Teleop's telemetry.
+     */
+    public void addTelemetry(Telemetry telemetry){
+        for (Subsystem s: subsystems){
+            Map<String, Object> telemetryData = s.getTelemetry();
+
+            for (Map.Entry<String, Object> entry : telemetryData.entrySet()){
+                String caption = entry.getKey();
+                Object value = entry.getValue();
+
+                telemetry.addData(caption, value);
+            }
+        }
+
+        telemetry.addData("Launch state", launchState);
     }
 
     public void launch(boolean shotRequested) {
