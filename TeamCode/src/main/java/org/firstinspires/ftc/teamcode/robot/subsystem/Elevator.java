@@ -46,7 +46,7 @@ public class Elevator extends Subsystem {
     /*
      * Returns the state of the elevator
      */
-    public ElevatorState state(){
+    public ElevatorState getElevatorState(){
         return elevatorState;
     }
     /*
@@ -80,5 +80,9 @@ public class Elevator extends Subsystem {
     @Override
     public void init(){
         elevatorState = ElevatorState.DOWN;
+    }
+    @Override
+    public void loop(){
+        addToTelemetry("Elevator State", elevatorState);
     }
 }

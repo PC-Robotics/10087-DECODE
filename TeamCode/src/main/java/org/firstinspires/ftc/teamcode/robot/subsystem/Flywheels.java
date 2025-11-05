@@ -36,9 +36,7 @@ public class Flywheels extends Subsystem {
      * but should be fixed.
      */
     public boolean flywheelsReady(){
-        if (-robot.leftFlywheel.getVelocity() > FLYWHEEL_MIN_VELOCITY) {
-            return true;
-        } else return false;
+        return (-robot.leftFlywheel.getVelocity() > FLYWHEEL_MIN_VELOCITY);
     }
     /*
      * Method for activating / deactivating the flywheels.
@@ -67,5 +65,12 @@ public class Flywheels extends Subsystem {
     @Override
     public void init(){
         flywheelsRunning = false;
+    }
+    @Override
+    public void loop(){
+        addToTelemetry("Flywheels running", flywheelsRunning);
+        addToTelemetry("Left flywheel speed", robot.leftFlywheel.getVelocity());
+        addToTelemetry("Right flywheel speed", robot.rightFlywheel.getVelocity());
+        addToTelemetry("Flywheels ready", flywheelsReady());
     }
 }

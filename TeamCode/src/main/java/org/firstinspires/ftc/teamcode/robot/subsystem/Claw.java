@@ -43,7 +43,7 @@ public class Claw extends Subsystem {
     /*
      * Returns the state of the claw
      */
-    public ClawState state(){
+    public ClawState getClawState(){
         return clawState;
     }
     /*
@@ -90,5 +90,9 @@ public class Claw extends Subsystem {
     @Override
     public void init(){
         clawState = ClawState.CLOSE;
+    }
+    @Override
+    public void loop(){
+        addToTelemetry("Claw State", clawState);
     }
 }

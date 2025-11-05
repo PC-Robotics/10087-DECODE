@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Claw;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
@@ -63,10 +64,6 @@ public class Teleop extends OpMode {
          * Show the state, motor powers, and servo positions.
          */
         //telemetry.addData("State", launchState);
-        telemetry.addData("Left flywheel speed", robot.leftFlywheel.getVelocity());
-        telemetry.addData("Right flywheel speed", robot.rightFlywheel.getVelocity());
-        telemetry.addData("Elevator state", robot.elevator.state());
-        telemetry.addData("Claw state", robot.claw.state());
-        telemetry.addData("Robot heading", (int) Math.toDegrees(robot.drivetrain.heading()));
+        robot.addTelemetry(telemetry);
     }
 }
