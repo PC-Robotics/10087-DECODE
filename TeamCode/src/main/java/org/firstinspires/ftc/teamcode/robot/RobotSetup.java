@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.robot;
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
@@ -27,6 +28,8 @@ public class RobotSetup {
     public DcMotorEx rightFlywheel = null;
     public Servo elevatorServo = null;
     public Servo clawServo = null;
+    public CRServo leftIntake = null;
+    public CRServo rightIntake = null;
     public IMU imu = null;
 
     /*
@@ -50,6 +53,8 @@ public class RobotSetup {
         rightFlywheel = hardwareMap.get(DcMotorEx.class, "right_launcher");
         elevatorServo = hardwareMap.get(Servo.class, "elevator");
         clawServo = hardwareMap.get(Servo.class, "claw");
+        leftIntake = hardwareMap.get(CRServo.class, "left_intake");
+        rightIntake = hardwareMap.get(CRServo.class, "right_intake");
         imu = hardwareMap.get(IMU.class, "imu");
 
         /*
@@ -86,6 +91,12 @@ public class RobotSetup {
          */
         leftFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        /*
+         * Inverting one of the intake servos so that they actually suck in the artifacts.
+         */
+        leftIntake.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightIntake.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         /*

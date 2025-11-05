@@ -52,6 +52,8 @@ public class Teleop extends OpMode {
 
         if (gamepad1.circleWasPressed()) robot.claw.toggleClaw();
 
+        if (gamepad1.squareWasPressed()) robot.intakes.toggleIntakes();
+
         if (gamepad1.dpad_up) robot.elevator.setElevator(Elevator.ElevatorState.UP);
         else if (gamepad1.dpad_left) robot.elevator.setElevator(Elevator.ElevatorState.MID);
         else if (gamepad1.dpad_down) robot.elevator.setElevator(Elevator.ElevatorState.DOWN);
