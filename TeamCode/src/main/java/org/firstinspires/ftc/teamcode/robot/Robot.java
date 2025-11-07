@@ -54,6 +54,7 @@ public class Robot extends RobotSetup {
         elevator = new Elevator(this);
         drivetrain = new Drivetrain(this);
         flywheels = new Flywheels(this);
+        intakes = new Intakes(this);
 
         subsystems.add(claw);
         subsystems.add(elevator);
