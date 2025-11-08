@@ -72,15 +72,14 @@ public class Drivetrain extends Subsystem {
         double denominator = Math.max(Math.abs(forward) + Math.abs(strafe) + Math.abs(rotate), 1);
 
         leftFrontPower = (forward + strafe + rotate) / denominator;
-        rightFrontPower = (forward - strafe - rotate) / denominator;
         leftBackPower = (forward - strafe + rotate) / denominator;
+        rightFrontPower = (forward - strafe - rotate) / denominator;
         rightBackPower = (forward + strafe - rotate) / denominator;
 
         robot.leftFrontDrive.setPower(leftFrontPower);
         robot.rightFrontDrive.setPower(rightFrontPower);
         robot.leftBackDrive.setPower(leftBackPower);
         robot.rightBackDrive.setPower(rightBackPower);
-
     }
     /*
      * Method for resetting the yaw on a button press or something.
@@ -97,5 +96,9 @@ public class Drivetrain extends Subsystem {
         addToTelemetry("Robot heading (degrees)", (int)Math.toDegrees(heading));
         addToTelemetry("Strafe power", strafe);
         addToTelemetry("Forward power", forward);
+        addToTelemetry("Left Front", leftFrontPower);
+        addToTelemetry("Right Front", rightFrontPower);
+        addToTelemetry("Left Back", leftBackPower);
+        addToTelemetry("Right Back", rightBackPower);
     }
 }

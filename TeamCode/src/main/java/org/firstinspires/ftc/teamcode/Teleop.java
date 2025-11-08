@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 @TeleOp(name = "New Teleop", group = "Teleop")
 public class Teleop extends OpMode {
     protected Robot robot;
+    protected boolean isFieldCentric = false;
 
     @Override
     /* Code to run ONCE when the driver hits INIT
@@ -46,7 +47,11 @@ public class Teleop extends OpMode {
     @Override
     public void loop(){
         robot.loop();
-        robot.drivetrain.drive(gamepad1.left_stick_y, -gamepad1.right_stick_x, -gamepad1.left_stick_x);
+        if (isFieldCentric) {
+            robot.drivetrain.fieldCentricDrive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        } else {
+            robot.drivetrain.drive(-gamepad1.left_stick_y, gamepad1.left_stick_x, gamepad1.right_stick_x);
+        }
 
         if (gamepad1.triangleWasPressed()) robot.flywheels.toggleFlywheels();
 
