@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Flywheels;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Intakes;
+import org.firstinspires.ftc.teamcode.robot.subsystem.Odometry;
 
 import java.util.ArrayList;
 //import java.util.LinkedHashMap;
@@ -28,6 +29,7 @@ public class Robot extends RobotSetup {
     public Drivetrain drivetrain;
     public Flywheels flywheels;
     public Intakes intakes;
+    public Odometry odometry;
     private final List<Subsystem> subsystems = new ArrayList<>();
 
     /*
@@ -55,7 +57,9 @@ public class Robot extends RobotSetup {
         drivetrain = new Drivetrain(this);
         flywheels = new Flywheels(this);
         intakes = new Intakes(this);
+        odometry = new Odometry(this);
 
+        subsystems.add(odometry);
         subsystems.add(claw);
         subsystems.add(elevator);
         subsystems.add(drivetrain);
@@ -83,6 +87,7 @@ public class Robot extends RobotSetup {
      */
     public void start(){
         for (Subsystem s: subsystems){
+            s.clearTelemetry();
             s.start();
         }
     }

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystem;
 
+import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.Subsystem;
 
@@ -19,13 +20,6 @@ public class Elevator extends Subsystem {
         UP,
     }
     /*
-     * Declaring constants for the up, middle, and down positions of the servo.
-     */
-    final double ELEVATOR_UP = 0.7; // Elevator position at maximum height
-    final double ELEVATOR_MID = 0.5; // Elevator position at middle height
-    final double ELEVATOR_DOWN = 0.2; // Elevator position at minimum height
-
-    /*
      * Enum to keep track of where the elevator is.
      */
     private ElevatorState elevatorState;
@@ -44,12 +38,6 @@ public class Elevator extends Subsystem {
         return elevatorState == ElevatorState.DOWN;
     }
     /*
-     * Returns the state of the elevator
-     */
-    public ElevatorState getElevatorState(){
-        return elevatorState;
-    }
-    /*
      * Method for setting the position of the elevator servo. Will only move the elevator if the
      * claw is set to ClawState.CLOSED, and if it's not closed, it will close the claw, unless
      * the elevator is being set to down where it doesn't matter anyways.
@@ -63,13 +51,13 @@ public class Elevator extends Subsystem {
             elevatorState = state;
             switch (state) {
                 case UP:
-                    robot.elevatorServo.setPosition(ELEVATOR_UP);
+                    robot.elevatorServo.setPosition(HardwareConstants.ELEVATOR_UP);
                     break;
                 case MID:
-                    robot.elevatorServo.setPosition(ELEVATOR_MID);
+                    robot.elevatorServo.setPosition(HardwareConstants.ELEVATOR_MID);
                     break;
                 case DOWN:
-                    robot.elevatorServo.setPosition(ELEVATOR_DOWN);
+                    robot.elevatorServo.setPosition(HardwareConstants.ELEVATOR_DOWN);
                     break;
             }
         } else if (state != ElevatorState.DOWN) robot.claw.setClaw(Claw.ClawState.CLOSE);

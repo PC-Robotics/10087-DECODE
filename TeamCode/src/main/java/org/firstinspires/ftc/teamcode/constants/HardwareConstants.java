@@ -1,0 +1,35 @@
+package org.firstinspires.ftc.teamcode.constants;
+
+public class HardwareConstants {
+    /*
+     * Declaring constants for the open and closed positions of the servo.
+     */
+    public static final double CLAW_OPEN = 0.20; // Claw position closed
+    public static final double CLAW_CLOSE = 0.3; // Claw position open
+
+    /*
+     * Declaring constants for the up, middle, and down positions of the servo.
+     */
+    public static final double ELEVATOR_UP = 0.7; // Elevator position at maximum height
+    public static final double ELEVATOR_MID = 0.5; // Elevator position at middle height
+    public static final double ELEVATOR_DOWN = 0.2; // Elevator position at minimum height
+
+    /*
+     * When we control our launcher motor, we are using encoders. These allow the control system
+     * to read the current speed of the motor and apply more or less power to keep it at a constant
+     * velocity. Here we are setting the target, and minimum velocity that the launcher should run
+     * at. The minimum velocity is a threshold for determining when to fire.
+     */
+    public static final double FLYWHEEL_TARGET_VELOCITY = 1125;
+    public static final double FLYWHEEL_MIN_VELOCITY = 2300;
+
+    /*
+     * Set the odometry pod positions relative to the point that the odometry computer tracks around.
+     * The X pod offset refers to how far sideways from the tracking point the X (forward) odometry
+     * pod is. Left of the center is a positive number, right of center is a negative number.
+     * the Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry
+     * pod is. forward of center is a positive number, backwards is a negative number.
+     */
+    public static final double X_OFFSET = 150.0;
+    public static final double Y_OFFSET = -80.0;
+}

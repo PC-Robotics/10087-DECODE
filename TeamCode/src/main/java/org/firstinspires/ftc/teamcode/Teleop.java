@@ -41,7 +41,7 @@ public class Teleop extends OpMode {
     public void start(){
         robot.start();
         robot.claw.setClaw(Claw.ClawState.CLOSE);
-        robot.elevator.setElevator(Elevator.ElevatorState.MID);
+        robot.elevator.setElevator(Elevator.ElevatorState.DOWN);
     }
 
     @Override

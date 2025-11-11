@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot.subsystem;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.Subsystem;
+import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 
 /*
  * This class handles everything relating to the moving claw on the robot that opens and closes
@@ -17,12 +18,6 @@ public class Claw extends Subsystem {
         CLOSE,
         OPEN,
     }
-    /*
-     * Declaring constants for the open and closed positions of the servo.
-     */
-    final double CLAW_OPEN = 0.20; // Claw position closed
-    final double CLAW_CLOSE = 0.3; // Claw position open
-
     /*
      * Enum to keep track of whether or not the claw is open or not.
      */
@@ -41,12 +36,6 @@ public class Claw extends Subsystem {
         return clawState == ClawState.CLOSE;
     }
     /*
-     * Returns the state of the claw
-     */
-    public ClawState getClawState(){
-        return clawState;
-    }
-    /*
      * Method for setting the position of the claw servo. Will only open the claw if the elevator
      * is set to ElevatorState.DOWN, but with present robot configuration, it can not actually
      * determine the real location of the elevator, meaning that if the elevator is in the process
@@ -59,12 +48,12 @@ public class Claw extends Subsystem {
             case OPEN:
                 if (robot.elevator.isDown()) {
                     clawState = state;
-                    robot.clawServo.setPosition(CLAW_OPEN);
+                    robot.clawServo.setPosition(HardwareConstants.CLAW_OPEN);
                 }
                 break;
             case CLOSE:
                 clawState = state;
-                robot.clawServo.setPosition(CLAW_CLOSE);
+                robot.clawServo.setPosition(HardwareConstants.CLAW_CLOSE);
                 break;
         }
     }

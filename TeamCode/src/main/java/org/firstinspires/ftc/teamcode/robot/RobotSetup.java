@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.robot;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.ZeroPowerBehavior.BRAKE;
 
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -31,6 +32,7 @@ public class RobotSetup {
     public CRServo leftIntake = null;
     public CRServo rightIntake = null;
     public IMU imu = null;
+    public GoBildaPinpointDriver odo = null;
 
     /*
      * Constant for IMU parameters.
@@ -56,6 +58,7 @@ public class RobotSetup {
         leftIntake = hardwareMap.get(CRServo.class, "left_intake");
         rightIntake = hardwareMap.get(CRServo.class, "right_intake");
         imu = hardwareMap.get(IMU.class, "imu");
+        odo = hardwareMap.get(GoBildaPinpointDriver.class, "odo");
 
         /*
          * To drive forward, most robots need the motor on one side to be reversed,

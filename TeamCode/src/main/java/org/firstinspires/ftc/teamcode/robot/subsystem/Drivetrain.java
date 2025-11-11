@@ -32,12 +32,6 @@ public class Drivetrain extends Subsystem {
         super(robot);
     }
     /*
-     * Returns the heading of the robot in radians.
-     */
-    public double getHeading(){
-        return heading;
-    }
-    /*
      * The drive function here uses the mecanum wheel magic that I don't really get the math behind
      * to move around the robot and drive.
      */
@@ -85,15 +79,14 @@ public class Drivetrain extends Subsystem {
      * Method for resetting the yaw on a button press or something.
      */
     public void resetYaw(){
-        robot.imu.resetYaw();
+        robot.odometry.resetYaw();
     }
     /*
      * Updating the heading of the robot every frame.
      */
     @Override
     public void loop(){
-        heading = robot.imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        addToTelemetry("Robot heading (degrees)", (int)Math.toDegrees(heading));
+        heading = robot.odometry.getHeading(AngleUnit.RADIANS);
         addToTelemetry("Strafe power", strafe);
         addToTelemetry("Forward power", forward);
         addToTelemetry("Left Front", leftFrontPower);

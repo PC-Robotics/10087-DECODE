@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystem;
 
+import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.Subsystem;
 
@@ -8,15 +9,6 @@ import org.firstinspires.ftc.teamcode.robot.Subsystem;
  * robot that launch the artifacts.
  */
 public class Flywheels extends Subsystem {
-    /*
-     * When we control our launcher motor, we are using encoders. These allow the control system
-     * to read the current speed of the motor and apply more or less power to keep it at a constant
-     * velocity. Here we are setting the target, and minimum velocity that the launcher should run
-     * at. The minimum velocity is a threshold for determining when to fire.
-     */
-    final double FLYWHEEL_TARGET_VELOCITY = 1125;
-    final double FLYWHEEL_MIN_VELOCITY = 2300;
-
     /*
      * Boolean value to keep track of whether or not the flywheels are running.
      */
@@ -36,7 +28,7 @@ public class Flywheels extends Subsystem {
      * but should be fixed.
      */
     public boolean flywheelsReady(){
-        return (-robot.leftFlywheel.getVelocity() > FLYWHEEL_MIN_VELOCITY);
+        return (-robot.leftFlywheel.getVelocity() > HardwareConstants.FLYWHEEL_MIN_VELOCITY);
     }
     /*
      * Method for activating / deactivating the flywheels.
@@ -44,8 +36,8 @@ public class Flywheels extends Subsystem {
     public void setFlywheels(boolean on){
         flywheelsRunning = on;
         if (on){
-            robot.leftFlywheel.setVelocity(FLYWHEEL_TARGET_VELOCITY);
-            robot.rightFlywheel.setVelocity(FLYWHEEL_TARGET_VELOCITY);
+            robot.leftFlywheel.setVelocity(HardwareConstants.FLYWHEEL_TARGET_VELOCITY);
+            robot.rightFlywheel.setVelocity(HardwareConstants.FLYWHEEL_TARGET_VELOCITY);
         } else {
             robot.leftFlywheel.setVelocity(0);
             robot.rightFlywheel.setVelocity(0);
