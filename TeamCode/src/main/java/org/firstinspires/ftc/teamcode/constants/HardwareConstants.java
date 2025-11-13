@@ -32,4 +32,7 @@ public class HardwareConstants {
      */
     public static final double X_OFFSET = 150.0;
     public static final double Y_OFFSET = -80.0;
+
+    public static final double FEED_TIME_SECONDS = 1; // Time we wait before lowering elevator after launching
+    public static final double LOWER_TIME_SECONDS = 1.6;
 }

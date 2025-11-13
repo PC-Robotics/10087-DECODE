@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Claw;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Drivetrain;
@@ -40,8 +41,9 @@ public class Robot extends RobotSetup {
         SPIN_UP,
         LAUNCH,
         LAUNCHING,
+        LOWERING,
     }
-    final double FEED_TIME_SECONDS = 1; // Time we wait before lowering elevator after launching
+
     private LaunchState launchState; // Enum to keep track of what stage of launching we are in
     ElapsedTime feederTimer = new ElapsedTime(); // Timer to be used when launching artifacts
 
@@ -145,10 +147,18 @@ public class Robot extends RobotSetup {
                 /*
                  * Lowering elevator, stopping flywheels, and going back to idle once the timer elapses.
                  */
-                if (feederTimer.seconds() > FEED_TIME_SECONDS) {
-                    launchState = LaunchState.IDLE;
+                if (feederTimer.seconds() > HardwareConstants.FEED_TIME_SECONDS) {
                     elevator.setElevator(Elevator.ElevatorState.DOWN);
+                    feederTimer.reset();
                     flywheels.setFlywheels(false);
+                    launchState = LaunchState.LOWERING;
+                }
+                break;
+
+            case LOWERING:
+                if (feederTimer.seconds() > HardwareConstants.LOWER_TIME_SECONDS){
+                    claw.setClaw(Claw.ClawState.OPEN);
+                    launchState = LaunchState.IDLE;
                 }
                 break;
         }
