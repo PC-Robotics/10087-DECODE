@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.constants.HardwareConstants;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Claw;
+import org.firstinspires.ftc.teamcode.robot.subsystem.DrivetrainPID;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Drivetrain;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Flywheels;
@@ -27,7 +28,7 @@ public class Robot extends RobotSetup {
      */
     public Claw claw;
     public Elevator elevator;
-    public Drivetrain drivetrain;
+    public DrivetrainPID drivetrain;
     public Flywheels flywheels;
     public Intakes intakes;
     public Odometry odometry;
@@ -56,7 +57,7 @@ public class Robot extends RobotSetup {
         super.init(hardwareMap);
         claw = new Claw(this);
         elevator = new Elevator(this);
-        drivetrain = new Drivetrain(this);
+        drivetrain = new DrivetrainPID(this);
         flywheels = new Flywheels(this);
         intakes = new Intakes(this);
         odometry = new Odometry(this);
