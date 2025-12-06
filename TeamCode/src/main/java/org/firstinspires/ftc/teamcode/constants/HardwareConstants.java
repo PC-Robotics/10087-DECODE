@@ -11,7 +11,7 @@ public class HardwareConstants {
      * Declaring constants for the up, middle, and down positions of the servo.
      */
     public static final double ELEVATOR_UP = 0.7; // Elevator position at maximum height
-    public static final double ELEVATOR_MID = 0.5; // Elevator position at middle height
+    public static final double ELEVATOR_MID = 0.55; // Elevator position at middle height changed position to .55 from .5
     public static final double ELEVATOR_DOWN = 0.2; // Elevator position at minimum height
 
     /*
@@ -20,8 +20,8 @@ public class HardwareConstants {
      * velocity. Here we are setting the target, and minimum velocity that the launcher should run
      * at. The minimum velocity is a threshold for determining when to fire.
      */
-    public static final double FLYWHEEL_TARGET_VELOCITY = 1125;
-    public static final double FLYWHEEL_MIN_VELOCITY = 2300;
+    public static final double FLYWHEEL_TARGET_VELOCITY = 2300; // old 1125
+    public static final double FLYWHEEL_MIN_VELOCITY = 2200; // old: 2300
 
     /*
      * Set the odometry pod positions relative to the point that the odometry computer tracks around.
