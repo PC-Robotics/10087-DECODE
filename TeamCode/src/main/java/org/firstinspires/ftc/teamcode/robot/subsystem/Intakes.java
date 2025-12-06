@@ -27,7 +27,7 @@ public class Intakes extends Subsystem {
     /*
      * Method for activating / deactivating the intakes.
      */
-    public void setIntakes(boolean on){
+    public void setIntakesRunning(boolean on){
         intakesRunning = on;
         if (on){
             robot.leftIntake.setPower(1);
@@ -43,7 +43,7 @@ public class Intakes extends Subsystem {
      * button press will last multiple frames and immediately toggle off the motors.
      */
     public void toggleIntakes(){
-        setIntakes(!intakesRunning);
+        setIntakesRunning(!intakesRunning());
     }
     /*
      * Initializing the flywheels to off because it's not like they would ever start running anyways.

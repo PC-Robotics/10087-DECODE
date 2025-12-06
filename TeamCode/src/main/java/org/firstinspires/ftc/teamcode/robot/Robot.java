@@ -123,7 +123,7 @@ public class Robot extends RobotSetup {
         telemetry.addData("Launch state", launchState);
     }
 
-    public void launch(boolean shotRequested) {
+    public void launch(boolean shotRequested, boolean openClawAfterShooting, boolean autoStopIntake) {
         switch (launchState) {
             case IDLE:
                 if (shotRequested) { // Setting the launch state to spin up when the shoot button is pressed
@@ -133,6 +133,7 @@ public class Robot extends RobotSetup {
                 break;
             case SPIN_UP:
                 flywheels.setFlywheels(true);
+                if (autoStopIntake) intakes.setIntakesRunning(false);
                 if (flywheels.flywheelsReady()) {
                     launchState = LaunchState.LAUNCH; // Launching once the motor reaches the right speed
                 }
@@ -157,7 +158,7 @@ public class Robot extends RobotSetup {
 
             case LOWERING:
                 if (feederTimer.seconds() > HardwareConstants.LOWER_TIME_SECONDS){
-                    claw.setClaw(Claw.ClawState.OPEN);
+                    if (openClawAfterShooting) claw.setClaw(Claw.ClawState.OPEN);
                     launchState = LaunchState.IDLE;
                 }
                 break;

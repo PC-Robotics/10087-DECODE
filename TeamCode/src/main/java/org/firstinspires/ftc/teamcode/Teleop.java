@@ -3,15 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.robot.Robot;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Claw;
 import org.firstinspires.ftc.teamcode.robot.subsystem.Elevator;
 
-@TeleOp(name = "New Teleop", group = "Teleop")
+@TeleOp(name = "Robot Centric Driving", group = "Teleop")
 public class Teleop extends OpMode {
     protected Robot robot;
     protected boolean isFieldCentric = false;
+    protected boolean openClawAfterShooting = true;
+    protected boolean autoStopIntake = false;
 
     @Override
     /* Code to run ONCE when the driver hits INIT
@@ -65,7 +66,7 @@ public class Teleop extends OpMode {
 
         if (gamepad1.options) robot.drivetrain.resetYaw();
 
-        robot.launch(gamepad1.rightBumperWasPressed());
+        robot.launch(gamepad1.rightBumperWasPressed(), openClawAfterShooting, autoStopIntake);
 
         /*
          * Show the state, motor powers, and servo positions.
