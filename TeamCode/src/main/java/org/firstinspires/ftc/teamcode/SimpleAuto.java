@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous(name = "Auto")
+@Autonomous(name = "Simple Auto")
 public class SimpleAuto extends OpMode {
     ElapsedTime driveTimer = new ElapsedTime();
     protected Robot robot;
@@ -43,7 +43,7 @@ public class SimpleAuto extends OpMode {
 
     @Override
     public void loop(){
-        if (driveTimer.seconds() > 1){
+        if (driveTimer.seconds() > 0.5){
             robot.drivetrain.drive(0,0,0);
         }
     }
