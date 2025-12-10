@@ -1,25 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot.subsystem;
 
 import static org.firstinspires.ftc.teamcode.constants.PIDConstants.*;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.DRIVE_DEADBAND;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.DRIVE_KD;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.DRIVE_KI;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.DRIVE_KP;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.DRIVE_MAX_AUTO;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.DRIVE_TOLERANCE;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.STRAFE_DEADBAND;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.STRAFE_KD;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.STRAFE_KI;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.STRAFE_KP;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.STRAFE_MAX_AUTO;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.STRAFE_TOLERANCE;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.YAW_DEADBAND;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.YAW_KD;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.YAW_KI;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.YAW_KP;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.YAW_MAX_AUTO;
-import static org.firstinspires.ftc.teamcode.constants.PIDConstants.YAW_TOLERANCE;
-
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -81,8 +62,8 @@ public class DrivetrainPID extends Drivetrain {
             double rotX = xDistance * Math.cos(-headingRad) - yDistance * Math.sin(-headingRad);
             double rotY = xDistance * Math.sin(-headingRad) + yDistance * Math.cos(-headingRad);
 
-            double strafe = driveController.getOutputFromError(rotX);
-            double forward = strafeController.getOutputFromError(rotY);
+            double strafe = strafeController.getOutputFromError(rotX);
+            double forward = driveController.getOutputFromError(rotY);
             double rotate = yawController.getOutput(headingDeg);
 
             drive(forward, -strafe, -rotate);
