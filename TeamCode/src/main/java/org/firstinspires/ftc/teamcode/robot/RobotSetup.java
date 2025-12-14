@@ -82,6 +82,11 @@ public class RobotSetup {
         leftFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         rightFlywheel.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        leftFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightFrontDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        leftBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        rightBackDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         /*
          * Setting all of the PIDF coefficients for the flywheels
          */
@@ -111,6 +116,7 @@ public class RobotSetup {
         rightFrontDrive.setZeroPowerBehavior(BRAKE);
         leftBackDrive.setZeroPowerBehavior(BRAKE);
         rightBackDrive.setZeroPowerBehavior(BRAKE);
+
         leftFlywheel.setZeroPowerBehavior(BRAKE);
         rightFlywheel.setZeroPowerBehavior(BRAKE);
 
