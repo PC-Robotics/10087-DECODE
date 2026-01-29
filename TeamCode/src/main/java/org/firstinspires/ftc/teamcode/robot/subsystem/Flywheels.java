@@ -28,7 +28,7 @@ public class Flywheels extends Subsystem {
      * but should be fixed.
      */
     public boolean flywheelsReady(){
-        return (-robot.leftFlywheel.getVelocity() > HardwareConstants.FLYWHEEL_MIN_VELOCITY);
+        return (robot.leftFlywheel.getVelocity() > HardwareConstants.FLYWHEEL_MIN_VELOCITY);
     }
     /*
      * Method for activating / deactivating the flywheels.
@@ -60,9 +60,12 @@ public class Flywheels extends Subsystem {
     }
     @Override
     public void loop(){
+        double velocity = robot.getVelocity(robot.leftFlywheel);
+        double velocity2 = robot.getVelocity(robot.rightFlywheel);
+
         addToTelemetry("Flywheels running", flywheelsRunning);
-        addToTelemetry("Left flywheel speed", robot.leftFlywheel.getVelocity());
-        addToTelemetry("Right flywheel speed", robot.rightFlywheel.getVelocity());
+        addToTelemetry("Left flywheel speed", velocity);
+        addToTelemetry("Right flywheel speed", velocity2);
         addToTelemetry("Flywheels ready", flywheelsReady());
     }
 }

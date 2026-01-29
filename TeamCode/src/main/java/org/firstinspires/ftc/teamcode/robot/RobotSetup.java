@@ -85,14 +85,14 @@ public class RobotSetup {
         /*
          * Setting all of the PIDF coefficients for the flywheels
          */
-        leftFlywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
-        rightFlywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(300, 0, 0, 10));
+        leftFlywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(280, 0, 0, 12.1));
+        rightFlywheel.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(280, 0, 0, 12.1));
 
         /*
          * Note exactly sure why both motors are reversed. I think I reversed the polarity at some
          * point when I was doing cable management but all that matters is that they work now.
          */
-        leftFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftFlywheel.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFlywheel.setDirection(DcMotorSimple.Direction.REVERSE);
 
         /*

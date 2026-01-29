@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.robot;
 
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -121,6 +122,9 @@ public class Robot extends RobotSetup {
         }
 
         telemetry.addData("Launch state", launchState);
+    }
+    public double getVelocity(DcMotorEx motor){
+        return motor.getVelocity();
     }
 
     public void launch(boolean shotRequested) {
