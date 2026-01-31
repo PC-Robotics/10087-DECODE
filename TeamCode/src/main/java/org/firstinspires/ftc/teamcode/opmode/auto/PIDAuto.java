@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.opmode.auto;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.robot.Robot;
 
-@Autonomous(name = "Auto")
-public class SimpleAuto extends OpMode {
+@Autonomous(name = "PIDAuto")
+public class PIDAuto extends OpMode {
     ElapsedTime driveTimer = new ElapsedTime();
     protected Robot robot;
 
@@ -20,6 +20,8 @@ public class SimpleAuto extends OpMode {
         robot = new Robot();
         robot.init(hardwareMap);
 
+        robot.odo.resetPosAndIMU();
+        robot.odometry.resetYaw();
         telemetry.addLine("Initialized");
     }
 
@@ -37,14 +39,14 @@ public class SimpleAuto extends OpMode {
      */
     @Override
     public void start(){
-        robot.drivetrain.drive(1, 0, 0);
+        robot.drivetrain.setPIDDriveActive(true);
+        robot.drivetrain.setTargetPosition(0, 48, 0, 1, 1);
         driveTimer.reset();
     }
 
     @Override
     public void loop(){
-        if (driveTimer.seconds() > 1){
-            robot.drivetrain.drive(0,0,0);
-        }
+        robot.loop();
+        robot.addTelemetry(telemetry);
     }
 }

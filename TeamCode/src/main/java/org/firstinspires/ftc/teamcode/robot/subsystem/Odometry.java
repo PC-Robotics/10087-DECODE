@@ -12,7 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 
 import java.util.Locale;
 public class Odometry extends Subsystem {
-    private Pose2D robotPosition;
+    private Pose2D robotPosition = robot.odo.getPosition();
     /*
      * Using the parent class, Subsystem, to construct Odometry.
      */

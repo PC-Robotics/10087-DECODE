@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.constants;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class HardwareConstants {
     /*
      * Declaring constants for the open and closed positions of the servo.
@@ -30,8 +33,8 @@ public class HardwareConstants {
      * the Y pod offset refers to how far forwards from the tracking point the Y (strafe) odometry
      * pod is. forward of center is a positive number, backwards is a negative number.
      */
-    public static final double X_OFFSET = 150.0;
-    public static final double Y_OFFSET = -80.0;
+    public static double X_OFFSET = 120;
+    public static double Y_OFFSET = 96;
 
     public static final double FEED_TIME_SECONDS = 1; // Time we wait before lowering elevator after launching
     public static final double LOWER_TIME_SECONDS = 1.6;
