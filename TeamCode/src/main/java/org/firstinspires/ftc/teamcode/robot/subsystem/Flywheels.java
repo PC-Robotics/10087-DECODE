@@ -23,12 +23,13 @@ public class Flywheels extends Subsystem {
 
     /*
      * Returns true or false depending on whether the flywheels are running at sufficient speed to
-     * launch an artifact. Due to strange hardware issues where only the left flywheel was reading
-     * the correct velocity, we are only checking the left flywheel which has seemed good enough
-     * but should be fixed.
+     * launch an artifact.
      */
     public boolean flywheelsReady(){
-        return (robot.leftFlywheel.getVelocity() > HardwareConstants.FLYWHEEL_MIN_VELOCITY);
+        return
+                (robot.leftFlywheel.getVelocity() > HardwareConstants.FLYWHEEL_MIN_VELOCITY)
+                &&
+                (robot.rightFlywheel.getVelocity() > HardwareConstants.FLYWHEEL_MIN_VELOCITY);
     }
     /*
      * Method for activating / deactivating the flywheels.
